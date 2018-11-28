@@ -1,0 +1,68 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "create",
+            "command": "./docker/scripts/create.sh",
+            "type": "shell",
+            "args": [
+                "srsall_dev"
+            ],
+            "problemMatcher": [
+            ]
+        },
+        {
+            "label": "build",
+            "command": "./docker/scripts/rebuild.sh",
+            "type": "shell",
+            "args": [
+                "srsall_dev",
+                "srsall",
+                "./"
+            ],
+            "problemMatcher": [
+                "$gcc"
+            ]
+        },
+        {
+            "label": "run eNB",
+            "command": "./docker/scripts/run.sh",
+            "type": "shell",
+            "args": [
+                "srsall_dev",
+                "srsenb",
+                "enb.conf",
+                "srsall"
+            ],
+            "problemMatcher": [
+            ]
+        },
+        {
+            "label": "run EPC",
+            "command": "./docker/scripts/run.sh",
+            "type": "shell",
+            "args": [
+                "srsall_dev",
+                "srsepc",
+                "epc.conf",
+                "srsall"
+            ],
+            "problemMatcher": [
+            ]
+        },
+        {
+            "label": "run UE",
+            "command": "./docker/scripts/run.sh",
+            "type": "shell",
+            "args": [
+                "srsall_dev",
+                "srsue",
+                "ue.conf",
+                "srsall"
+            ],
+            "problemMatcher": [
+            ]
+        }
+    ],
+    "reveal": "always"
+}

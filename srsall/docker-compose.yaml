@@ -1,0 +1,31 @@
+version: "3"
+
+services:
+  enb:
+    image: srsall:latest
+    network_mode: host
+    privileged: true
+    stdin_open: true
+    volumes:
+      - '/lib/modules:/lib/modules'
+      - ~/.srs:/root/.srs
+    working_dir: /srsall/build/srsenb/src
+    command: ["./srsenb", "/root/.srs/enb.conf"]
+  epc:
+    image: srsall:latest
+    network_mode: host
+    stdin_open: true
+    volumes:
+      - ~/.srs:/root/.srs
+    working_dir: /srsall/build/srsepc/src
+    command: ["./srsepc", "/root/.srs/epc.conf"]
+  ue:
+    image: srsall:latest
+    network_mode: host
+    privileged: true
+    stdin_open: true
+    volumes:
+      - '/lib/modules:/lib/modules'
+      - ~/.srs:/root/.srs
+    working_dir: /srsall/build/srsue/src
+    command: ["./srsue", "/root/.srs/ue.conf"]
