@@ -8,5 +8,5 @@ TAG=${5:-latest}
 docker kill $CONTAINER
 docker rm $CONTAINER
 
-docker build -t $IMAGE -f $DOCKERFILE $CONTEXT
+docker build -t $IMAGE:$TAG -f $DOCKERFILE $CONTEXT
 docker run --name=$CONTAINER --network=host --privileged -di -v /lib/modules:/lib/modules -v ~/.srs:/root/.srs $IMAGE:$TAG
