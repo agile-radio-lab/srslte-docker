@@ -1,4 +1,4 @@
-FROM srslte:uhd.dev
+FROM igorskh/srslte:uhd.dev
 
 ARG srs_folder=./
 ARG service_folder=srsall

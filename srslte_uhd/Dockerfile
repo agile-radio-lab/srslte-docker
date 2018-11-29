@@ -1,4 +1,4 @@
-FROM uhd:v3.10
+FROM igorskh/uhd:v3.10
 
 RUN apt update && \
 	apt install -y \
