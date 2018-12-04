@@ -3,22 +3,25 @@
     "tasks": [
         {
             "label": "create",
-            "command": "./docker/scripts/create.sh",
+            "command": "~/srslte-docker/scripts/create.sh",
             "type": "shell",
             "args": [
-                "srsall_dev"
+                "srsall_dev",
+                "srsall",
+                "~/srslte-docker/srsall/Dockerfile",
+                "${workspaceFolder}"
             ],
             "problemMatcher": [
             ]
         },
         {
             "label": "build",
-            "command": "./docker/scripts/rebuild.sh",
+            "command": "~/srslte-docker/scripts/rebuild.sh",
             "type": "shell",
             "args": [
                 "srsall_dev",
                 "srsall",
-                "./"
+                "${workspaceFolder}"
             ],
             "problemMatcher": [
                 "$gcc"
@@ -26,7 +29,7 @@
         },
         {
             "label": "run eNB",
-            "command": "./docker/scripts/run.sh",
+            "command": "~/srslte-docker/scripts/run.sh",
             "type": "shell",
             "args": [
                 "srsall_dev",
@@ -39,7 +42,7 @@
         },
         {
             "label": "run EPC",
-            "command": "./docker/scripts/run.sh",
+            "command": "~/srslte-docker/scripts/run.sh",
             "type": "shell",
             "args": [
                 "srsall_dev",
@@ -52,7 +55,7 @@
         },
         {
             "label": "run UE",
-            "command": "./docker/scripts/run.sh",
+            "command": "~/srslte-docker/scripts/run.sh",
             "type": "shell",
             "args": [
                 "srsall_dev",

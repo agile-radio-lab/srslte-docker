@@ -16,43 +16,6 @@ Folder `scripts` contains useful scripts to build containers and perfrom build a
 * Extract binaries from docker container to the README
 * Create a production build
 
-## Configuration files
-Configuration files folder can be mount from a default `~/.srs/ ` location on the host machine.
-
-## Build the base UHD image
-By default the base image containing the UHD installation is:
-```
-cd uhd
-docker build -t uhd:latest .
-```
-
-This will create an `uhd:latest docker` image.
-
-Optionally the version of the UHD can be passed as
-
-```
-docker build --build-arg uhd_tag=release_003_010_003_000 .
-```
-
-Images srsENB and srsUE will use this base image.
-
-## Build the base srsLTE image
-The base srsLTE image contains common dependencies and based on Ubuntu Linux distribution.
-
-To build a base image run:
-```
-cd srslte
-docker build -t srslte:latest .
-```
-
-To build a base image with UHD support
-```
-cd srslte_uhd
-docker build -t srslte:uhd .
-```
-
-All other images such as combined srsEPC, srsENB and srsUE will use this base image.
-
 ## Build srsLTE
 From the root folder of the srsLTE repository run:
 ```
@@ -87,6 +50,12 @@ Where `srsall_dev` is a container name created before and `srsall` is a service 
 
 In the same way several instances of the image `srsall:latest` can be created, for example for srsENB, srsEPC or srsUE.
 
+## Configuration files
+Configuration files folder can be mount from a default `~/.srs/ ` location on the host machine.
+
+Copying files to the container:
+docker cp ~/dev/GoProjects/src/oaiReportLib/oaireportlib.so srsall_dev:/srsall/build/srsenb/src/.
+
 ## Run srsLTE from combined image
 To run a certain service from the srsall folder, a script `run.sh` can be used:
 ```
@@ -106,3 +75,37 @@ cp example.tasks.json ../.vscode/tasks.json
 ```
 
 Then tasks can be called as `Ctrl+Shift+P` -> `Tasks: Run task` -> Choose task here.
+
+## OPTIONAL: Build the base UHD image
+By default the base image containing the UHD installation is:
+```
+cd uhd
+docker build -t uhd:latest .
+```
+
+This will create an `uhd:latest docker` image.
+
+Optionally the version of the UHD can be passed as
+
+```
+docker build --build-arg uhd_tag=release_003_010_003_000 .
+```
+
+Images srsENB and srsUE will use this base image.
+
+## OPTIONAL: Build the base srsLTE image
+The base srsLTE image contains common dependencies and based on Ubuntu Linux distribution.
+
+To build a base image run:
+```
+cd srslte
+docker build -t srslte:latest .
+```
+
+To build a base image with UHD support
+```
+cd srslte_uhd
+docker build -t srslte:uhd .
+```
+
+All other images such as combined srsEPC, srsENB and srsUE will use this base image.
