@@ -8,7 +8,10 @@ The srsLTE can be easily deployed for different front-end devices and driver ver
 
 Folders `uhd` and `srslte` contain base images for Ettus UHD and srsLTE dependencies correspondingly.
 
-Folder `scripts` contains useful scripts to build containers and perfrom build and run operations.
+Folder `scripts` contains useful scripts to build containers and perform build and run operations.
+
+## Requirements
+* Docker 18
 
 ## TODO
 * Add namings and tags description to the README
