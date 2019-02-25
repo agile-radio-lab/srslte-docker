@@ -56,7 +56,7 @@ In the same way several instances of the image `srsall:latest` can be created, f
 ## Configuration files
 Configuration files folder can be mount from a default `~/.srs/ ` location on the host machine.
 
-Copying files to the container:
+Copying files to the container, for example:
 docker cp ~/dev/GoProjects/src/oaiReportLib/oaireportlib.so srsall_dev:/srsall/build/srsenb/src/.
 
 ## Run srsLTE from combined image
