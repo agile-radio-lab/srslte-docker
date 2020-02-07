@@ -11,6 +11,7 @@
                 "--root=${workspaceFolder}",
                 "--config-path-host=~/dev/srsLTE/srslte-config",
                 "--config-path-cont=/root/.config/srslte",
+                "--image=igorskh/srslte-app",
                 "--gui=false"
             ],
             "problemMatcher": [
