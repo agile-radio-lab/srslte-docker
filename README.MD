@@ -19,55 +19,70 @@ Folder `scripts` contains useful scripts to build containers and perform build a
 * Extract binaries from docker container to the README
 * Create a production build
 
+## Dockerfile Example
+The following Dockerfile is building srsLTE:
+```bash
+FROM igorskh/srslte
+
+ARG WORKFOLDER=./
+ARG SERVICE_FOLDER=srslte
+
+COPY $WORKFOLDER /$SERVICE_FOLDER
+RUN rm -rf /$SERVICE_FOLDER/build
+RUN mkdir /$SERVICE_FOLDER/build
+WORKDIR /$SERVICE_FOLDER/build
+RUN cmake ../ &&\
+    make
+```
+
+Image  igorskh/srslte contains necessary dependencies, corresponding [Dockerfile](srslte_uhd/Dockerfile) is located in [srslte_uhd](srslte_uhd).
+For other UHD versions new image has to be generated.
+
 ## Build srsLTE
-From the root folder of the srsLTE repository run:
-```
-docker build -t srsall:latest -f docker/srsall/Dockerfile .
-```
-The command above specifies a context in a current directory, which allows copying the srsLTE repository to a docker container, otherwise file operations are limited to a context. An image will be tagged as `srsall:latest`.
-
-In order to create and run a container:
-```
-docker run --name=srsall_dev --network=host --privileged -di -v /lib/modules:/lib/modules -v ~/.srs:/root/.srs srsall:latest
-```
-
-Flag `d` runs a container in detached mode.
-
-Flag `i` keeps container running.
-
-`srsall_dev` is a container name and can be changed to any other name.
-
-Or use a script to perform the steps above:
-```
-./docker/scripts/create.sh srsall_dev
+Build script is located in [scripts/build.sh](scripts/build.sh), with prepared Dockerfile it can be used as following
+```bash
+~/srslte-docker/scripts/build.sh \
+    --container=srslte-app \
+    --service=srslte \
+    --root=$(pwd) \
+    --image=igorskh/srslte-app \
+    --config-path-host=~/dev/srsLTE/srslte-config \
+    --config-path-cont=/root/.config/srslte \
+    --gui=true
 ```
 
-## Rebuild srsLTE
-To rebuild/recompile the code run:
+`~/srslte-docker` is location of this repository.
+
+The arguments are the following:
+* `--container` - a container name
+* `--service` - a subfolder name which will be created in the root of the  
+* `--root` - the location of the srsLTE repository
+* `--image` - the Docker image name which will be given to the built image
+* `--config-path-host` - location of the configuration files folder on the host
+* `--config-path-cont` - location of the configuration files folder in the container
+* `--gui` - enable X11 passthrough to the container if true
+
+The same script can be used for rebuilding the source code, the `build` folder will be preserved.
+
+## Run srsLTE in Docker
+Run script is located in [scripts/build.sh](scripts/run.sh)
+
+Example:
+```bash
+~/srslte-docker/run.sh \
+    --container=srslte-app \
+    --app=srsenb \
+    --root=build/srsenb/src \
+    --service=srslte
 ```
-cd docker/srsall/
-./docker/scripts/rebuild.sh srsall_dev srsall ./
-```
 
-Where `srsall_dev` is a container name created before and `srsall` is a service name.
+The arguments are the following:
+* `--container` - a container name, should be same as for the build step
+* `--app` - executable name
+* `--root` - path relative to the `/$service`
+* `--service` - service name, should be the same as for the build step
 
-In the same way several instances of the image `srsall:latest` can be created, for example for srsENB, srsEPC or srsUE.
-
-## Configuration files
-Configuration files folder can be mount from a default `~/.srs/ ` location on the host machine.
-
-Copying files to the container, for example:
-docker cp ~/dev/GoProjects/src/oaiReportLib/oaireportlib.so srsall_dev:/srsall/build/srsenb/src/.
-
-## Run srsLTE from combined image
-To run a certain service from the srsall folder, a script `run.sh` can be used:
-```
-./docker/scripts/run.sh srsall_dev srsenb enb.conf srsall
-```
-* First positional argument is a container name
-* Second positional argument is an application name
-* Third arg is a configuration file name in a mounted folder
-* Forth arg is a service name
+In this example the script will run `/srslte/build/srsenb/src/srsenb` executable.
 
 ## Automatization for Visual Studio Code
 File `example.tasks.json` contains tasks for the VS Code to build and run srsLTE.
@@ -95,20 +110,3 @@ docker build --build-arg uhd_tag=release_003_010_003_000 .
 ```
 
 Images srsENB and srsUE will use this base image.
-
-## OPTIONAL: Build the base srsLTE image
-The base srsLTE image contains common dependencies and based on Ubuntu Linux distribution.
-
-To build a base image run:
-```
-cd srslte
-docker build -t srslte:latest .
-```
-
-To build a base image with UHD support
-```
-cd srslte_uhd
-docker build -t srslte:uhd .
-```
-
-All other images such as combined srsEPC, srsENB and srsUE will use this base image.

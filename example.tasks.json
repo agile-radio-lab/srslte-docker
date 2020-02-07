@@ -2,26 +2,16 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "create",
-            "command": "~/srslte-docker/scripts/create.sh",
-            "type": "shell",
-            "args": [
-                "srsall_dev",
-                "srsall",
-                "~/srslte-docker/srsall/Dockerfile",
-                "${workspaceFolder}"
-            ],
-            "problemMatcher": [
-            ]
-        },
-        {
             "label": "build",
-            "command": "~/srslte-docker/scripts/rebuild.sh",
+            "command": "~/srslte-docker/scripts/build.sh",
             "type": "shell",
             "args": [
-                "srsall_dev",
-                "srsall",
-                "${workspaceFolder}"
+                "--container=srslte-app",
+                " --service=srslte",
+                "--root=${workspaceFolder}",
+                "--config-path-host=~/dev/srsLTE/srslte-config",
+                "--config-path-cont=/root/.config/srslte",
+                "--gui=false"
             ],
             "problemMatcher": [
                 "$gcc"
@@ -32,10 +22,10 @@
             "command": "~/srslte-docker/scripts/run.sh",
             "type": "shell",
             "args": [
-                "srsall_dev",
-                "srsenb",
-                "enb.conf",
-                "srsall"
+                "--container=srslte-app",
+                "--app=srsenb",
+                "--service=srslte",
+                "--root=build/srsenb/src"
             ],
             "problemMatcher": [
             ]
@@ -45,10 +35,10 @@
             "command": "~/srslte-docker/scripts/run.sh",
             "type": "shell",
             "args": [
-                "srsall_dev",
-                "srsepc",
-                "epc.conf",
-                "srsall"
+                "--container=srslte-app",
+                "--app=srsepc",
+                "--service=srslte",
+                "--root=build/srsepc/src"
             ],
             "problemMatcher": [
             ]
@@ -58,10 +48,10 @@
             "command": "~/srslte-docker/scripts/run.sh",
             "type": "shell",
             "args": [
-                "srsall_dev",
-                "srsue",
-                "ue.conf",
-                "srsall"
+                "--container=srslte-app",
+                "--app=srsue",
+                "--service=srslte",
+                "--root=build/srsue/src"
             ],
             "problemMatcher": [
             ]

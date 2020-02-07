@@ -1,9 +1,66 @@
-#!/bin/bash
-CONTAINER=${1:-srsall_dev}
-APP=${2:-srsenb}
-CONF=${3:-srsenb.conf}
-SERVICE=${4:-srsall}
-PARAMS=${5:-}
-CONFIGPATH=${6:-/root/.config/srslte}
+#!/bin/sh
+CONTAINER=service-app
+APP=app
+SERVICE=service
+PARAMS=
+CONFIG_PATH=
+CONFIG_NAME=
 
-docker exec -w /$SERVICE/build/$APP/src -it $CONTAINER /bin/sh -c "./$APP $PARAMS $CONFIGPATH/$CONF"
+usage() {
+    echo "Run Docker container"
+    echo ""
+    echo "./build.sh"
+    echo "\t-h --help"
+    echo "\t--container=$CONTAINER"
+    echo "\t--root=$ROOT"
+    echo "\t--app=$APP"
+    echo "\t--service=$SERVICE"
+    echo "\t--params=$PARAMS"
+    echo "\t--config-path=$CONFIG_PATH"
+    echo "\t--config-name=$CONFIG_NAME"
+    echo ""
+}
+
+while [ "$1" != "" ]; do
+    PARAM=$(echo $1 | awk -F= '{print $1}')
+    VALUE=$(echo $1 | awk -F= '{print $2}')
+    case $PARAM in
+    -h | --help)
+        usage
+        exit 0
+        ;;
+    -c | --container)
+        CONTAINER=$VALUE
+        ;;
+    -r | --root)
+        ROOT=$VALUE
+        ;;
+    -a | --app)
+        APP=$VALUE
+        ;;
+    -s | --service)
+        SERVICE=$VALUE
+        ;;
+    -p | --params)
+        PARAMS=$VALUE
+        ;;
+    --config-path)
+        CONFIG_PATH=$VALUE
+        ;;
+    --config-name)
+        CONFIG_NAME=$VALUE
+        ;;
+    *)
+        echo "ERROR: unknown parameter \"$PARAM\""
+        usage
+        exit 1
+        ;;
+    esac
+    shift
+done
+
+RUN_ARGS=./$APP $PARAMS
+[ ! -z "$CONFIG_PATH" ] && RUN_ARGS="$RUN_ARGS $CONFIG_PATH/"
+[ ! -z "$CONFIG_NAME" ] && RUN_ARGS="$RUN_ARGS$CONFIG_NAME"
+
+docker exec -w /$SERVICE/$ROOT -it $CONTAINER /bin/sh -c "$RUN_ARGS"
