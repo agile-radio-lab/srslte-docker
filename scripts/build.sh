@@ -71,8 +71,8 @@ RUN_ARGS="--privileged -di -v /lib/modules:/lib/modules --network=host -d --name
 [ ! -z "$CONFIG_PATH_HOST" ] && echo "Config path configured" &&  RUN_ARGS="$RUN_ARGS -v $CONFIG_PATH_HOST:$CONFIG_PATH_CONT"
 [ $GUI = true ] && echo "GUI configured" && RUN_ARGS="$RUN_ARGS -e DISPLAY=$DISPLAY -v /tmp/.X11-unix/:/tmp/.X11-unix"
 
-[ ! "$(docker ps -a | grep $CONTAINER)" ] && docker run $RUN_ARGS $IMAGE
-[ ! "$(docker ps -a | grep $CONTAINER)" ] && echo "Unable to create container $CONTAINER from $IMAGE" && exit 1
+[ ! "$(docker ps -a --format {{.Names}} | grep $CONTAINER)" ] && docker run $RUN_ARGS $IMAGE
+[ ! "$(docker ps -a --format {{.Names}} | grep $CONTAINER)" ] && echo "Unable to create container $CONTAINER from $IMAGE" && exit 1
 
 if $BUILD_REQUIRED; then
     echo Preserving build folder
