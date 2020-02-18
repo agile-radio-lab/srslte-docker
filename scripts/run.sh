@@ -5,6 +5,7 @@ SERVICE=service
 PARAMS=
 CONFIG_PATH=
 CONFIG_NAME=
+DETACHED=false
 
 usage() {
     echo "Run Docker container"
@@ -18,6 +19,7 @@ usage() {
     echo "\t--params=$PARAMS"
     echo "\t--config-path=$CONFIG_PATH"
     echo "\t--config-name=$CONFIG_NAME"
+    echo "\t--detached=$DETACHED"
     echo ""
 }
 
@@ -50,6 +52,9 @@ while [ "$1" != "" ]; do
     --config-name)
         CONFIG_NAME=$VALUE
         ;;
+    --detached)
+        DETACHED=$VALUE
+        ;;
     *)
         echo "ERROR: unknown parameter \"$PARAM\""
         usage
@@ -59,8 +64,14 @@ while [ "$1" != "" ]; do
     shift
 done
 
+[ "$(docker ps | grep $CONTAINER)" ] && docker kill $CONTAINER
+docker start $CONTAINER
+
 RUN_ARGS=./$APP $PARAMS
 [ ! -z "$CONFIG_PATH" ] && RUN_ARGS="$RUN_ARGS $CONFIG_PATH/"
 [ ! -z "$CONFIG_NAME" ] && RUN_ARGS="$RUN_ARGS$CONFIG_NAME"
 
-docker exec -w /$SERVICE/$ROOT -it $CONTAINER /bin/sh -c "$RUN_ARGS"
+START_PARAMS="-it"
+[ $DETACHED = true ] && START_PARAMS="-d"
+
+docker exec -w /$SERVICE/$ROOT $START_PARAMS $CONTAINER /bin/sh -c "$RUN_ARGS"
