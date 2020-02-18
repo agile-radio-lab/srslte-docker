@@ -1,0 +1,11 @@
+FROM igorskh/srslte18
+
+ARG WORKFOLDER=./
+ARG SERVICE_FOLDER=srslte
+
+COPY $WORKFOLDER /$SERVICE_FOLDER
+RUN rm -rf /$SERVICE_FOLDER/build
+RUN mkdir /$SERVICE_FOLDER/build
+WORKDIR /$SERVICE_FOLDER/build
+RUN cmake ../ &&\
+    make
