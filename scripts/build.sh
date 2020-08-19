@@ -60,19 +60,23 @@ while [ "$1" != "" ]; do
     shift
 done
 
+CHECK_IMAGE="$(docker images --format "{{.Repository}}:{{.Tag}}")"
+CHECK_CONTAINER="$(docker ps -a --format {{.Names}} | grep -x $CONTAINER)"
+
 BUILD_REQUIRED=true
-if [ ! "$(docker images -a | grep $IMAGE)" ]; then
+if [ ! "$(docker images --format "{{.Repository}}:{{.Tag}}")" ]; then
     docker build --build-arg SERVICE_FOLDER=$SERVICE --build-arg WORKFOLDER=$SRC -t $IMAGE --force-rm  $ROOT
     BUILD_REQUIRED=false
     [ ! "$(docker images -a | grep $IMAGE)" ] && echo "Unable to create image $IMAGE" && exit 1
 fi
 
-RUN_ARGS="--privileged -di -v /lib/modules:/lib/modules --network=host -d --name $CONTAINER"
+CAPABILITIES="--privileged"
+RUN_ARGS="$CAPABILITIES -di -v /lib/modules:/lib/modules -d --network=host --name $CONTAINER"
 [ ! -z "$CONFIG_PATH_HOST" ] && echo "Config path configured" &&  RUN_ARGS="$RUN_ARGS -v $CONFIG_PATH_HOST:$CONFIG_PATH_CONT"
 [ $GUI = true ] && echo "GUI configured" && RUN_ARGS="$RUN_ARGS -e DISPLAY=$DISPLAY -v /tmp/.X11-unix/:/tmp/.X11-unix"
 
-[ ! "$(docker ps -a --format {{.Names}} | grep $CONTAINER)" ] && docker run $RUN_ARGS $IMAGE
-[ ! "$(docker ps -a --format {{.Names}} | grep $CONTAINER)" ] && echo "Unable to create container $CONTAINER from $IMAGE" && exit 1
+[ ! "$(docker ps -a --format {{.Names}} | grep -x $CONTAINER)" ] && docker run $RUN_ARGS $IMAGE
+[ ! "$(docker ps -a --format {{.Names}} | grep -x $CONTAINER)" ] && echo "Unable to create container $CONTAINER from $IMAGE" && exit 1
 
 if $BUILD_REQUIRED; then
     echo Preserving build folder
